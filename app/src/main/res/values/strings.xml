@@ -11,5 +11,9 @@
     <string name="message_have_space">Please Fill All Evaey Black</string>
     <string name="surname">Surname</string>
     <string name="email">Email</string>
-
+    <string name="repassword">repassword</string>
+    <string name="title_not_math">Password Not Math</string>
+    <string name="message_not_math">Pless Type Two Password Math</string>
+    <string name="title_non_choose">Non choose Gender</string>
+    <string name="message_non_choose">plese choose Gender</string>
 </resources>

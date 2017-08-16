@@ -3,6 +3,7 @@ package siam.go.mint.num.siamdailynew.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,15 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 
 import siam.go.mint.num.siamdailynew.R;
+import siam.go.mint.num.siamdailynew.manage.MyAlert;
 
 /**
  * Created by Tong on 15/8/2560.
  */
 
 public class SignUpFragment extends Fragment {
-    
+
+
+    //Explicit
+    private String nameString, surnameString, emailString, userString
+            , passwordString, genderString,divisionString, rePasswordString;
+
+    private boolean aBoolean = true;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -33,13 +44,36 @@ public class SignUpFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Back Controllor
+        // Back Controller
         backControllor();
 
 
-        //Save conrtollor
+        //Save conrtoller
         saveConrtollor();
+
+        //GEnder Contorller
+        GEnderContorller();
+        boolean status;
     }
+
+    private void GEnderContorller() {
+        RadioGroup radioGroup = getView().findViewById(R.id.ragGender);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                aBoolean = false;
+                switch (i) {
+                    case  R.id.radMale:
+                        genderString = "Male";
+                        break;
+                    case R.id.radFemale:
+                        genderString = "Female";
+                        break;
+                }
+                }
+            });
+        }
+
 
 
     private void saveConrtollor() {
@@ -54,10 +88,47 @@ public class SignUpFragment extends Fragment {
                 EditText emailEditText = getView().findViewById(R.id.edtEmail);
                 EditText userEditText = getView().findViewById(R.id.edtUser);
                 EditText passwordEditText = getView().findViewById(R.id.edtPassword);
+                EditText RePasswordEditText = getView().findViewById(R.id.edtREPassword);
+
+//                Get value to String
+
+                nameString = nameEditText.getText().toString().trim();
+                surnameString = surnameEditText.getText().toString().trim();
+                emailString = emailEditText.getText().toString().trim();
+                userString = userEditText.getText().toString().trim();
+               passwordString = passwordEditText.getText().toString().trim();
+                rePasswordString = RePasswordEditText.getText().toString().trim();
+
+                //Check Space
+                if (checkSpace())
+                {
+                    //Have space
+                    MyAlert myAlert = new MyAlert(getActivity());
+                    myAlert.myDialog(getResources().getString(R.string.have_space),
+                            getResources().getString(R.string.message_have_space));
+                } else if (!passwordString.equals(rePasswordString)) {
+                    //No Math Password
+                    MyAlert myAlert = new MyAlert(getActivity());
+                    myAlert.myDialog(getString(R.string.title_not_math), getString(R.string.message_not_math));
+                } else {
+                    //Non chose Genner
+
+                    MyAlert myAlert = new MyAlert(getActivity());
+                    myAlert.myDialog(getString(R.string.title_non_choose),getString(R.string.message_non_choose));
+                }
 
 
             }// onClick
         });
+    }
+
+    private boolean checkSpace() {
+        return nameString.equals("") ||
+                surnameString.equals("") ||
+                emailString.equals("") ||
+                userString.equals("") ||
+                passwordString.equals("") ||
+                rePasswordString.equals("");
     }
 
     private void backControllor() {
