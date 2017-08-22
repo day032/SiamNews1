@@ -24,6 +24,7 @@ import siam.go.mint.num.siamdailynew.R;
 import siam.go.mint.num.siamdailynew.manage.GetAuData;
 import siam.go.mint.num.siamdailynew.manage.MyAlert;
 import siam.go.mint.num.siamdailynew.manage.MyConstant;
+import siam.go.mint.num.siamdailynew.manage.PostNewMember;
 
 /**
  * Created by Tong on 15/8/2560.
@@ -82,8 +83,11 @@ public class SignUpFragment extends Fragment {
 
             JSONArray jsonArray = new JSONArray(strJSoN);
             final String[] divStrings = new String[jsonArray.length()];
+            final String[] idStrings = new String[jsonArray.length()];
+
             for (int i=0; i<jsonArray.length(); i+=1) {
                 JSONObject jaObject = jsonArray.getJSONObject(i);
+                idStrings[i] = jaObject.getString("fd_id");
                 divStrings[i] = jaObject.getString("fd_nameth");
                 Log.d(tag , "faculty["+ i + "] ==>" + divStrings[i]);
             }//for
@@ -97,12 +101,13 @@ public class SignUpFragment extends Fragment {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    divisionString = divStrings[i];
+                    divisionString = idStrings[i];
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    divisionString = divStrings[0];
+                    divisionString = idStrings
+                            [0];
                 }
             });
 
@@ -195,6 +200,36 @@ public class SignUpFragment extends Fragment {
         Log.d(tag, userString);
         Log.d(tag, passwordString);
 
+        MyConstant myConstant = new MyConstant();
+        //String[] coStrings = myConstant.getCoulmMemberString();
+
+        try {
+
+
+            PostNewMember postNewMember = new PostNewMember(getActivity());
+            postNewMember.execute(nameString,surnameString,genderString,emailString,
+                    userString,passwordString,
+                    divisionString,myConstant.getUrlAddMember());
+            String result = postNewMember.get();
+            Log.d(tag, "Result ==>" + result);
+            if(Boolean.parseBoolean(result)){
+
+                getActivity().getSupportFragmentManager()
+                        .popBackStack();
+            }else{
+
+                MyAlert myAlert = new MyAlert(getActivity());
+                myAlert.myDialog("Cannot upload", "please Tye Again");
+
+            }
+
+
+
+
+
+        }catch (Exception e){
+            Log.d(tag, "e upload ==>"+e.toString());
+        }
 
     }
 
