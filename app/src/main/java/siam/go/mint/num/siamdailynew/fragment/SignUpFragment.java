@@ -10,10 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import siam.go.mint.num.siamdailynew.R;
 import siam.go.mint.num.siamdailynew.manage.GetAuData;
@@ -74,6 +79,32 @@ public class SignUpFragment extends Fragment {
             getAuData.execute(myConstant.getUrlfecdep());
             String strJSoN = getAuData.get();
             Log.d(tag, "JSON ==>"+ strJSoN);
+
+            JSONArray jsonArray = new JSONArray(strJSoN);
+            final String[] divStrings = new String[jsonArray.length()];
+            for (int i=0; i<jsonArray.length(); i+=1) {
+                JSONObject jaObject = jsonArray.getJSONObject(i);
+                divStrings[i] = jaObject.getString("fd_nameth");
+                Log.d(tag , "faculty["+ i + "] ==>" + divStrings[i]);
+            }//for
+
+            ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_list_item_1,
+                    divStrings
+            );
+            spinner.setAdapter(stringArrayAdapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    divisionString = divStrings[i];
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    divisionString = divStrings[0];
+                }
+            });
 
 
         } catch (Exception e) {
@@ -137,16 +168,34 @@ public class SignUpFragment extends Fragment {
                     //No Math Password
                     MyAlert myAlert = new MyAlert(getActivity());
                     myAlert.myDialog(getString(R.string.title_not_math), getString(R.string.message_not_math));
-                } else {
+                } else if (aBoolean) {
+
                     //Non chose Genner
 
                     MyAlert myAlert = new MyAlert(getActivity());
-                    myAlert.myDialog(getString(R.string.title_non_choose),getString(R.string.message_non_choose));
+                    myAlert.myDialog(getString(R.string.title_non_choose), getString(R.string.message_non_choose));
+                } else {
+                    uploadNewUserToServer();
                 }
 
 
             }// onClick
         });
+    }
+
+    private void uploadNewUserToServer() {
+
+        //Show Log
+        String tag = "22AugV2";
+        Log.d(tag, nameString);
+        Log.d(tag, surnameString);
+        Log.d(tag, genderString);
+        Log.d(tag, emailString);
+        Log.d(tag, divisionString);
+        Log.d(tag, userString);
+        Log.d(tag, passwordString);
+
+
     }
 
     private boolean checkSpace() {
