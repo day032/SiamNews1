@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import siam.go.mint.num.siamdailynew.R;
+import siam.go.mint.num.siamdailynew.manage.GetAuData;
 import siam.go.mint.num.siamdailynew.manage.MyAlert;
+import siam.go.mint.num.siamdailynew.manage.MyConstant;
 
 /**
  * Created by Tong on 15/8/2560.
@@ -53,8 +56,31 @@ public class SignUpFragment extends Fragment {
 
         //GEnder Contorller
         GEnderContorller();
+
+        //Divittion Controller
+        divittionController();
+
         boolean status;
     }
+    //divitionContorllre
+    private void divittionController() {
+        Spinner spinner =getView().findViewById(R.id.spnDivition);
+        MyConstant myConstant = new MyConstant();
+        String tag = "22AugV1";
+
+        try {
+
+            GetAuData getAuData = new GetAuData((getActivity()));
+            getAuData.execute(myConstant.getUrlfecdep());
+            String strJSoN = getAuData.get();
+            Log.d(tag, "JSON ==>"+ strJSoN);
+
+
+        } catch (Exception e) {
+            Log.d(tag,"e divtion ==>" + e.toString());
+        }
+
+    }//divitionContorller
 
     private void GEnderContorller() {
         RadioGroup radioGroup = getView().findViewById(R.id.ragGender);
@@ -72,6 +98,7 @@ public class SignUpFragment extends Fragment {
                 }
                 }
             });
+
         }
 
 
